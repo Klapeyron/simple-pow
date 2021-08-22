@@ -51,7 +51,7 @@ impl IntoIterator for Input {
 
     fn into_iter(self) -> Self::IntoIter {
         PrefixedChecksumIterator {
-            prefix: (0..u32::MAX).into_iter(),
+            prefix: (0..u32::MAX),
             hasher: sha2::Sha256::new(),
             input: self,
         }
@@ -73,12 +73,9 @@ impl Iterator for PrefixedChecksumIterator {
 }
 
 fn main() -> Result<(), PrefixSearchError> {
-    let args = std::env::args().collect::<Vec<String>>();
-
-    let input = args
+    let input = std::env::args()
         .into_iter()
-        .skip(1) // skip name of the app @ argv[0]
-        .next()
+        .nth(1) // skip name of the app @ argv[0]
         .ok_or(PrefixSearchError::NotEnoughCommandLineArguments)?;
 
     let input = Input {
